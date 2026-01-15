@@ -89,17 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const socket = io(BACKEND_URL, {
       auth: { token: token },
+      transports: ['websocket'], // บังคับใช้ websocket เท่านั้นเพื่อข้ามหน้า warning ของ ngrok
+      upgrade: false,
       extraHeaders: {
-        "ngrok-skip-browser-warning": "true" // ใส่ตรงนี้เพื่อให้ Socket คุยกับ ngrok ได้
-      },
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            "ngrok-skip-browser-warning": "true" // กันเหนียวสำหรับโหมด polling
-          }
-        }
-      },
-      transports: ['polling', 'websocket']
+        "ngrok-skip-browser-warning": "true"
+      }
     });
 
     socket.on("connect", () => {
