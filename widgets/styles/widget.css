@@ -1,0 +1,153 @@
+/* --- widget.css --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+
+/* Reset & Base */
+* { box-sizing: border-box; }
+
+.widget {
+  /* ขนาดหลัก (คงความใหญ่ไว้ตามเดิม) */
+  width: 70vw;       
+  min-width: 300px;
+  position: relative;
+  
+  /* พื้นฐาน Font */
+  font-family: 'Inter', sans-serif;
+  color: white;
+  
+  /* Layout กลางจอ */
+  display: flex;
+  justify-content: center; /* จัดกึ่งกลาง */
+  align-items: center;
+  
+  /* พื้นหลังคร่าวๆ ให้เห็นขอบเขต */
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 3vw;
+  padding: 4vw;
+}
+
+/* =========================================
+   COMPONENT STYLES (แกะจาก React)
+   ========================================= */
+
+/* --- Avatar Box --- */
+/* React: rounded-2xl flex items-center justify-center */
+.avatar-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* ปรับให้เป็นสี่เหลี่ยมมน ไม่ใช่วงกลม */
+  border-radius: 20%; 
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* ขนาด */
+  width: 14vw;
+  height: 14vw;
+  font-size: 6vw; /* icon size */
+  flex-shrink: 0; /* ห้ามหด */
+}
+
+/* --- Text Styles --- */
+.text-name {
+  font-weight: 600;
+  font-size: 4vw;
+  color: #FFE082;
+  line-height: 1.2;
+}
+
+.text-amount {
+  font-weight: 800;
+  font-size: 8vw;
+  color: #00D1FF;
+  line-height: 1;
+}
+
+.text-message {
+  font-size: 2.5vw;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  
+  /* ตัดคำ */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =========================================
+   LAYOUT VARIATIONS (โครงสร้าง)
+   ========================================= */
+
+/* --- TYPE 0: MAIN (แนวตั้ง) --- */
+/* React: flex flex-col items-center text-center */
+.layout-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+.layout-main .text-name { margin-top: 2vw; }
+.layout-main .text-amount { margin-top: 1vw; }
+.layout-main .text-message { margin-top: 1vw; }
+
+
+/* --- TYPE 1: ROW (แนวนอน) --- */
+/* React: flex items-center gap-4 */
+.layout-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  gap: 4vw; /* ระยะห่างระหว่างรูปกับข้อความ */
+}
+.layout-row .content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* แก้บั๊ก text ล้น */
+}
+
+
+/* --- TYPE 2: NOTIFICATION (การ์ดเล็ก) --- */
+/* React: flex items-center gap-3, Name & Amount อยู่บรรทัดเดียวกัน */
+.widget.notification-mode {
+  width: auto;      /* ไม่ยืดเต็ม */
+  max-width: 90vw;
+  padding: 3vw;
+  border-radius: 3vw;
+  background: rgba(0, 0, 0, 0.7); /* สีเข้มขึ้นหน่อย */
+}
+
+.layout-notification {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  gap: 3vw;
+}
+
+/* ปรับขนาด avatar ของแบบ notification ให้เล็กลงหน่อย */
+.layout-notification .avatar-box {
+  width: 10vw;
+  height: 10vw;
+  font-size: 4vw;
+  border-radius: 2vw;
+}
+
+.layout-notification .content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* บรรทัดแรกของ Notification (ชื่อ + เงิน) */
+.layout-notification .header-line {
+  display: flex;
+  align-items: baseline; /* ให้ฐานตัวหนังสือตรงกัน */
+  gap: 2vw;
+}
+.layout-notification .text-name { font-size: 3.5vw; }
+.layout-notification .text-amount { font-size: 4vw; } /* ลดขนาดเงินลง */
+.layout-notification .text-message { font-size: 2vw; margin-top: 0.5vw; }

@@ -1,0 +1,50 @@
+/* --- base.css --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+
+:root {
+  --bg: rgba(0, 0, 0, 0.55);
+  --accent: #00d1ff;
+  --name: #ffe082;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent; /* พื้นหลังใสสำหรับ OBS */
+  font-family: "Inter", system-ui, sans-serif;
+  overflow: hidden;
+
+  /* หัวใจสำคัญ: สั่งให้ body จัดของทุกอย่างไว้ตรงกลาง */
+  display: flex;
+  justify-content: center; /* กึ่งกลางแนวนอน */
+  align-items: center;     /* กึ่งกลางแนวตั้ง */
+  width: 100vw;
+  height: 100vh;
+}
+
+.widget {
+  /* ลบ position absolute ออก เพราะเราใช้ Flexbox แล้ว */
+  background: var(--bg);
+  backdrop-filter: blur(12px);
+  border-radius: 3vw; /* ความโค้งปรับตามจอ */
+  padding: 3vw;       /* padding ปรับตามจอ */
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.65);
+  
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.show {
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.hide {
+  animation: popOut 0.4s ease-in forwards;
+}
+
+@keyframes popIn {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes popOut {
+  to { opacity: 0; transform: scale(0.8); }
+}
