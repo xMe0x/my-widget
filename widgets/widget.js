@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("No widget token found in URL");
       return;
     }
-    const BACKEND_URL = "https://bc767c7955c7.ngrok-free.app"; // ลิงก์ ngrok ของคุณ
+    const BACKEND_URL = "https://setsuko-knotless-boyishly.ngrok-free.dev"; // ลิงก์ ngrok ของคุณ
 
     const socket = io(BACKEND_URL, {
       auth: { token: token },
@@ -119,3 +119,4 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("⚠️ Socket not connected (Test Mode Only)", e);
   }
 });
+
