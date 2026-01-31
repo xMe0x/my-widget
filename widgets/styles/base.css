@@ -14,37 +14,56 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   overflow: hidden;
 
-  /* หัวใจสำคัญ: สั่งให้ body จัดของทุกอย่างไว้ตรงกลาง */
+  /* จัดกึ่งกลางจอ */
   display: flex;
-  justify-content: center; /* กึ่งกลางแนวนอน */
-  align-items: center;     /* กึ่งกลางแนวตั้ง */
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vh;
 }
 
 .widget {
-  /* ลบ position absolute ออก เพราะเราใช้ Flexbox แล้ว */
   background: var(--bg);
   backdrop-filter: blur(12px);
-  border-radius: 3vw; /* ความโค้งปรับตามจอ */
-  padding: 3vw;       /* padding ปรับตามจอ */
+  border-radius: 3vw;
+  padding: 3vw;
   border: 1px solid rgba(255,255,255,0.15);
   box-shadow: 0 10px 40px rgba(0,0,0,0.65);
   
+  /* --- ตั้งค่าเริ่มต้น: ซ่อนและอยู่ต่ำกว่าปกติ --- */
   opacity: 0;
-  transform: scale(0.8);
+  transform: translateY(100px); 
 }
 
+/* อนิเมชันขาเข้า: เลื่อนขึ้นมา */
 .show {
-  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-.hide {
-  animation: popOut 0.4s ease-in forwards;
+  animation: slideUpIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-@keyframes popIn {
-  to { opacity: 1; transform: scale(1); }
+/* อนิเมชันขาออก: เลื่อนขึ้นไปอีกนิดแล้วจางหาย */
+.hide {
+  animation: slideUpOut 0.5s ease-in forwards;
 }
-@keyframes popOut {
-  to { opacity: 0; transform: scale(0.8); }
+
+/* --- Keyframes --- */
+@keyframes slideUpIn {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
 }
