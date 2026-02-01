@@ -1,7 +1,7 @@
 import { renderWidget } from "./renderer.js";
 
 // --- CONFIG ---
-const BACKEND_URL = "https://windowy-iteratively-neta.ngrok-free.dev"; 
+const BACKEND_URL = "https://setsuko-knotless-boyishly.ngrok-free.dev"; 
 const NOTIFY_SOUND_URL = `${BACKEND_URL}/sounds/notification-bell-sound-1-376885.mp3`;
 
 window.test = function () {
