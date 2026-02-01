@@ -1,5 +1,6 @@
 import { renderWidget } from "./renderer.js";
 
+// ฟังก์ชันทดสอบ (Test Function)
 window.test = function () {
   console.log("Test triggered manually");
   document.dispatchEvent(
@@ -8,7 +9,7 @@ window.test = function () {
         donate_by: "ทดสอบโดเนท",
         amount: "5,000 THB",
         donate_details: "สวัสดีครับ! โค้ดใหม่นี้ต้องใหญ่และอยู่กลางจอแน่นอนครับ",
-        soundUrl: "", // ใส่ URL เสียงพูดทดสอบที่นี่ถ้าต้องการ
+        soundUrl: "", // ใส่ URL เสียงพูดทดสอบที่นี่ถ้าต้องการ (ถ้าว่างไว้จะเล่นแค่กระดิ่ง)
       },
     })
   );
@@ -21,13 +22,15 @@ function getToken() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const widgetEl = document.getElementById("widget");
-  const soundEl = document.getElementById("sound");
-  if (!widgetEl) return;
+  const soundEl = document.getElementById("sound"); // ใช้อ element นี้ตัวเดียวในการเล่นเสียง
+  
+  if (!widgetEl || !soundEl) return;
 
   const queue = [];
   let playing = false;
   
   // URL ของเสียงแจ้งเตือน (กระดิ่ง)
+  // หมายเหตุ: ตรวจสอบให้แน่ใจว่าลิงก์นี้เข้าถึงได้ตลอด (ไม่ติดหน้า Warning ของ ngrok)
   const NOTIFICATION_SOUND_URL = "https://setsuko-knotless-boyishly.ngrok-free.dev/sounds/notification-bell-sound-1-376885.mp3";
 
   document.addEventListener("manual-test", (e) => {
@@ -44,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     playing = true;
     const raw = queue.shift();
 
+    // 1. สร้าง HTML Widget
     const { html, className } = renderWidget(raw.widgetType ?? 0, {
       name: raw.donate_by,
       amount: raw.amount,
@@ -57,54 +61,67 @@ document.addEventListener("DOMContentLoaded", () => {
       widgetEl.classList.add("show");
     });
 
-    // --- ส่วนที่แก้ไข: เล่นเสียงกระดิ่งก่อน แล้วค่อยเล่นเสียงพูด ---
+    // 2. จัดการเรื่องเสียง (Sound Logic)
     
-    const bellAudio = new Audio(NOTIFICATION_SOUND_URL);
-    bellAudio.volume = 0.8; // ปรับความดังเสียงกระดิ่ง (0.0 - 1.0)
+    // รีเซ็ต Event เก่าทิ้งก่อน เพื่อป้องกันการทำงานซ้ำซ้อน
+    soundEl.onended = null;
+    soundEl.onerror = null;
 
-    // ฟังก์ชันสำหรับเล่นเสียงพูดหลัก (แยกออกมาเพื่อเรียกใช้ต่อจากกระดิ่ง)
-    const playMainSound = () => {
-        if (raw.soundUrl && soundEl) {
+    // ฟังก์ชันย่อย: สำหรับเล่นเสียงพูด (TTS) หลังจากกระดิ่งจบ
+    const playMainVoice = () => {
+        // ล้าง onended ออก เพื่อไม่ให้วนลูป
+        soundEl.onended = null;
+        soundEl.onerror = null;
+
+        if (raw.soundUrl) {
+            console.log("🔔 Bell finished, playing voice...");
             soundEl.src = raw.soundUrl;
             soundEl.volume = 0.8;
-      
-            soundEl
-              .play()
-              .then(() => console.log("Playing main voice sound..."))
-              .catch((err) => console.error("Audio playback failed:", err));
-          }
+            soundEl.play().catch(err => console.error("Voice playback failed:", err));
+        } else {
+            console.log("🔔 Bell finished, no voice URL provided.");
+        }
     };
 
-    // สั่งเล่นเสียงกระดิ่ง
-    bellAudio.play()
-        .then(() => {
-            console.log("Playing notification bell...");
-        })
-        .catch((err) => {
-            console.error("Bell playback failed:", err);
-            // ถ้ากระดิ่ง error ให้ข้ามไปเล่นเสียงพูดเลย
-            playMainSound(); 
-        });
+    // เริ่มต้น: ตั้งค่าให้เล่นเสียงกระดิ่งก่อน
+    soundEl.src = NOTIFICATION_SOUND_URL;
+    soundEl.volume = 0.8;
 
-    // เมื่อเสียงกระดิ่งจบ ให้เล่นเสียงพูดต่อทันที
-    bellAudio.onended = () => {
-        playMainSound();
+    // เมื่อกระดิ่งเล่นจบ -> ให้เรียก playMainVoice
+    soundEl.onended = playMainVoice;
+
+    // กรณีฉุกเฉิน: ถ้ากระดิ่ง Error (เช่น ลิงก์เสีย) -> ให้ข้ามไปเล่นเสียงพูดเลย อย่าเงียบ
+    soundEl.onerror = () => {
+        console.warn("⚠️ Bell sound failed to load, skipping to voice.");
+        playMainVoice();
     };
 
-    // -------------------------------------------------------
+    // สั่งเล่นเสียง (เริ่มที่กระดิ่ง)
+    soundEl.play().catch((err) => {
+        console.error("Audio playback error (Autoplay blocked?):", err);
+        // ถ้าสั่งเล่นไม่ได้เลย ให้ลองข้ามไปสเต็ปเสียงพูดเผื่อฟลุ๊ค
+        playMainVoice();
+    });
 
+    // 3. ตั้งเวลาปิด Widget
     setTimeout(() => {
       widgetEl.classList.remove("show");
       widgetEl.classList.add("hide");
 
       setTimeout(() => {
         widgetEl.classList.remove("hide");
-        if (soundEl) soundEl.src = "";
+        
+        // เคลียร์เสียงเมื่อจบการทำงานรอบนี้
+        soundEl.src = "";
+        soundEl.onended = null;
+        soundEl.onerror = null;
+        
         playNext();
       }, 500);
-    }, 8000); // 8 วินาที (ระวัง: ถ้าเสียงพูดยาวกว่า 8 วิ อาจจะถูกตัดจบก่อน)
+    }, 8000); // แสดงผล 8 วินาที
   }
 
+  // ส่วนของการเชื่อมต่อ Socket (Backend)
   try {
     const token = getToken();
 
@@ -112,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("No widget token found in URL");
       return;
     }
-    const BACKEND_URL = "https://setsuko-knotless-boyishly.ngrok-free.dev"; // ลิงก์ ngrok ของคุณ
+    const BACKEND_URL = "https://setsuko-knotless-boyishly.ngrok-free.dev"; 
 
     const socket = io(BACKEND_URL, {
       auth: { token: token },
