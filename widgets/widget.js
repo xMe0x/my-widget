@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // URL ของเสียงแจ้งเตือน (กระดิ่ง)
   // หมายเหตุ: ตรวจสอบให้แน่ใจว่าลิงก์นี้เข้าถึงได้ตลอด (ไม่ติดหน้า Warning ของ ngrok)
-  const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/110/110-preview.mp3";
+  const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/600/600-preview.mp3";
 
   document.addEventListener("manual-test", (e) => {
     queue.push(e.detail);
