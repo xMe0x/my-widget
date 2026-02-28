@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("No widget token found in URL");
       return;
     }
-    const BACKEND_URL = "https://windowy-iteratively-neta.ngrok-free.dev"; 
+    const BACKEND_URL = "https://nery-unmedicated-juliet.ngrok-free.dev"; 
 
     const socket = io(BACKEND_URL, {
       auth: { token: token },
